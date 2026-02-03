@@ -1,0 +1,16 @@
+__pycache__
+.vscode/
+
+# Local/generated assets
+img/
+image/
+demos/
+core/Link copy.py
+core/Write copy.py
+
+
+# README exports
+README.md
+README.MD
+README.pdf
+README.PDF
