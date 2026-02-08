@@ -77,7 +77,9 @@ def export_stl(design, save_dir, components):
             if 'old_component' not in occ.component.name:
                 try:
                     print(occ.component.name)
-                    fileName = scriptDir + "/" + occ.component.name
+                    proper_name = occ.name.replace(':', '_')
+                    fileName = scriptDir + "/" + proper_name
+                    # fileName = scriptDir + "/" + occ.component.name
                     # create stl exportOptions
                     stlExportOptions = exportMgr.createSTLExportOptions(occ, fileName)
                     stlExportOptions.sendToPrintUtility = False

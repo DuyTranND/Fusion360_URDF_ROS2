@@ -68,7 +68,6 @@ class Link:
         # visual
         visual = SubElement(link, 'visual')
         origin_v = SubElement(visual, 'origin')
-        visual_origin_xyz = ' '.join([str(_) for _ in self.xyz])
         origin_v.attrib = {'xyz':'0 0 0', 'rpy':'0 0 0'}
         
         geometry_v = SubElement(visual, 'geometry')
@@ -82,7 +81,6 @@ class Link:
         # collision
         collision = SubElement(link, 'collision')
         origin_c = SubElement(collision, 'origin')
-        collision_origin_xyz = ' '.join([str(_) for _ in self.xyz])
         origin_c.attrib = {'xyz':'0 0 0', 'rpy':'0 0 0'}
         
         geometry_c = SubElement(collision, 'geometry')

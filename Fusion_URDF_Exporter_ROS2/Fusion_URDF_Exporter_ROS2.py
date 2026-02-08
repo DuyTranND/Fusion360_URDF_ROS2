@@ -3,7 +3,6 @@
 
 import adsk, adsk.core, adsk.fusion, traceback
 import os
-import sys
 from .utils import utils
 from .core import Link, Joint, Write
 
@@ -117,7 +116,6 @@ def run(context):
             utils.update_package_xml(save_dir, package_name)
 
             # Generate STl files
-            # utils.copy_occs(root)
             utils.export_stl(design, save_dir, components)
 
             success_msg = 'Successfully created URDF file and launch file for Gazebo Harmonic'

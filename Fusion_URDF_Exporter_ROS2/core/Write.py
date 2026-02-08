@@ -145,23 +145,15 @@ def write_link_urdf(joints_dict, repo, links_xyz_dict, file_name, inertial_dict)
         # others
         for joint_name, jd in joints_dict.items():
             name = jd['child']
-
-            # COM world (từ Fusion)
             com_world = inertial_dict[name]['center_of_mass']
-
-            # pose child link in world (từ FK)
             if name not in world_pose:
-                # Nếu tree thiếu / không resolve được, fallback: dùng COM world như cũ
                 com_child = com_world
                 inertia_child = inertial_dict[name]['inertia']
             else:
                 R_wc, t_wc = world_pose[name]
                 Rt = matT3(R_wc)
                 com_child = matvec3(Rt, vsub(com_world, t_wc))
-
-                # (khuyến nghị) xoay inertia về cùng axes của link frame
                 inertia_child = rotate_inertia_to_link_frame(inertial_dict[name]['inertia'], R_wc)
-
             link = Link.Link(
                 name=name, xyz=jd['xyz'],
                 center_of_mass=com_child,
@@ -169,7 +161,6 @@ def write_link_urdf(joints_dict, repo, links_xyz_dict, file_name, inertial_dict)
                 mass=inertial_dict[name]['mass'],
                 inertia_tensor=inertia_child
             )
-
             links_xyz_dict[link.name] = link.xyz
             link.make_link_xml()
             f.write(link.link_xml)
@@ -334,33 +325,6 @@ def write_ros2control_xacro(joints_dict, links_xyz_dict, inertial_dict, package_
         f.write('<robot name="{}" xmlns:xacro="http://www.ros.org/wiki/xacro" >\n'.format(robot_name))
         f.write('\n')
 
-        '''
-        for j in joints_dict:
-            parent = joints_dict[j]['parent']
-            child = joints_dict[j]['child']
-            joint_type = joints_dict[j]['type']
-            upper_limit = joints_dict[j]['upper_limit']
-            lower_limit = joints_dict[j]['lower_limit']
-            try:
-                xyz = [round(p-c, 6) for p, c in \
-                    zip(links_xyz_dict[parent], links_xyz_dict[child])]  # xyz = parent - child
-            except KeyError as ke:
-                app = adsk.core.Application.get()
-                ui = app.userInterface
-                ui.messageBox("There seems to be an error with the connection between\n\n%s\nand\n%s\n\nCheck \
-whether the connections\nparent=component2=%s\nchild=component1=%s\nare correct or if you need \
-to swap component1<=>component2"
-                % (parent, child, parent, child), "Error!")
-                quit()
-
-            joint = Joint.Joint(name=j, joint_type = joint_type, xyz=xyz, \
-            axis=joints_dict[j]['axis'], parent=parent, child=child, \
-            upper_limit=upper_limit, lower_limit=lower_limit)
-            if joint_type != 'fixed':
-                joint.make_transmission_xml()
-                f.write(joint.tran_xml)
-                f.write('\n')
-        '''
         f.write('</robot>\n')
 
 
@@ -421,12 +385,6 @@ def write_gazebo_sim_xacro(joints_dict, links_xyz_dict, inertial_dict, package_n
         f.write('\n')
         f.write('<xacro:property name="body_color" value="Gazebo/Silver" />\n')
         f.write('\n')
-
-        #gazebo = Element('gazebo')
-        #plugin = SubElement(gazebo, 'plugin')
-        #plugin.attrib = {'name':'control', 'filename':'libgazebo_ros_control.so'}
-        #gazebo_xml = "\n".join(utils.prettify(gazebo).split("\n")[1:])
-        #f.write(gazebo_xml)
 
         # for base_link
         f.write('<gazebo reference="base_link">\n')

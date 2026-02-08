@@ -5,8 +5,7 @@ Created on Sun May 12 20:17:17 2019
 @author: syuntoku
 """
 
-import adsk, re, os, math
-from datetime import datetime
+import adsk, re, math
 from xml.etree.ElementTree import Element, SubElement
 from ..utils import utils
 from typing import Dict, Any, Tuple, List
@@ -100,7 +99,7 @@ class Joint:
         mechanicalReduction.text = '1'
         
         self.tran_xml = "\n".join(utils.prettify(tran).split("\n")[1:])
-import math
+
 from typing import List, Tuple
 
 Vec3 = List[float]
